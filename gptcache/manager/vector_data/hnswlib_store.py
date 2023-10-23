@@ -59,9 +59,7 @@ class Hnswlib(VectorBase):
         new_index.init_index(max_elements=self._max_elements, ef_construction=100, M=16)
         new_index.set_ef(self._top_k * 2)
         self._index = new_index
-        datas = []
-        for key, data in zip(ids, all_data):
-            datas.append(VectorData(id=key, data=data))
+        datas = [VectorData(id=key, data=data) for key, data in zip(ids, all_data)]
         self.mul_add(datas)
 
     def delete(self, ids):

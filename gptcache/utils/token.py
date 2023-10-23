@@ -14,5 +14,4 @@ def _get_encoding():
 
 def token_counter(text):
     """Token Counter"""
-    num_tokens = len(_get_encoding().encode(text))
-    return num_tokens
+    return len(_get_encoding().encode(text))

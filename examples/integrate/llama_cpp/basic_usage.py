@@ -38,9 +38,7 @@ def llama_cpp_stream_usage():
     for _ in range(2):
         start_time = time.time()
         ret = llm(prompt="Q: Name the planets in the solar system? A: ", stop=["Q:", "\n"], stream=True, cache_obj=llm_cache)
-        answer = ''
-        for chunk in ret:
-            answer += chunk['choices'][0]['text']
+        answer = ''.join(chunk['choices'][0]['text'] for chunk in ret)
         print("Time consuming: {:.2f}s".format(time.time() - start_time))
         print(f"Received: {answer}")
 

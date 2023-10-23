@@ -61,7 +61,7 @@ class DocGen:
                 os.path.isfile(os.path.join(module_dir, file))
                 and file not in _default_skip_file_list
             ):
-                libs.append(module + "." + os.path.splitext(file)[0])
+                libs.append(f"{module}.{os.path.splitext(file)[0]}")
             if not is_root:
                 if (
                     os.path.isdir(os.path.join(module_dir, file))
@@ -71,7 +71,7 @@ class DocGen:
                         os.path.join(module_dir, file), False
                     )
                     libs.extend(child_libs)
-        if len(libs) > 0:
+        if libs:
             sorted(libs)
             return module, libs
         return "", []

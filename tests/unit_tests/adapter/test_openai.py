@@ -186,9 +186,9 @@ def test_stream_openai():
             stream=True,
         )
 
-        all_text = ""
-        for res in response:
-            all_text += get_stream_message_from_openai_answer(res)
+        all_text = "".join(
+            get_stream_message_from_openai_answer(res) for res in response
+        )
         assert all_text == expect_answer, all_text
 
     response = openai.ChatCompletion.create(

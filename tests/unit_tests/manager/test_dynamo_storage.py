@@ -48,7 +48,9 @@ class TestDynamoCacheStorage(unittest.TestCase):
             self.dynamo_cache_storage.create()
             self.dynamo_cache_storage.create()
         except Exception as e:
-            pytest.fail("create() method should be idempotent. It failed with exception: " + str(e))
+            pytest.fail(
+                f"create() method should be idempotent. It failed with exception: {str(e)}"
+            )
 
         # now manually query via boto3 to make sure the table is there
         table = self._dynamo_resource().Table("gptcache_questions")

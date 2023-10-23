@@ -64,8 +64,7 @@ class ViT(BaseEmbedding):
 
     def preprocess(self, data):
         image_processor = AutoImageProcessor.from_pretrained(self.model_name)
-        inputs = image_processor(data, return_tensors="pt")
-        return inputs
+        return image_processor(data, return_tensors="pt")
 
     @property
     def dimension(self):

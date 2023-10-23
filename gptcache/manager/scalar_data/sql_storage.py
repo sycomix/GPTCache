@@ -44,12 +44,14 @@ def _get_table_len(config: Dict, column_alias: str) -> int:
 def get_models(table_prefix, db_type, table_len_config):
     DynamicBase = declarative_base(class_registry={})  # pylint: disable=C0103
 
+
+
     class QuestionTable(DynamicBase):
         """
         question table
         """
 
-        __tablename__ = table_prefix + "_question"
+        __tablename__ = f"{table_prefix}_question"
         __table_args__ = {"extend_existing": True}
 
         if db_type in ("oracle", "duckdb"):
@@ -66,12 +68,15 @@ def get_models(table_prefix, db_type, table_len_config):
         embedding_data = Column(LargeBinary, nullable=True)
         deleted = Column(Integer, default=0)
 
+
+
+
     class AnswerTable(DynamicBase):
         """
         answer table
         """
 
-        __tablename__ = table_prefix + "_answer"
+        __tablename__ = f"{table_prefix}_answer"
         __table_args__ = {"extend_existing": True}
 
         if db_type in ("oracle", "duckdb"):
@@ -85,12 +90,15 @@ def get_models(table_prefix, db_type, table_len_config):
         )
         answer_type = Column(Integer, nullable=False)
 
+
+
+
     class SessionTable(DynamicBase):
         """
         session table
         """
 
-        __tablename__ = table_prefix + "_session"
+        __tablename__ = f"{table_prefix}_session"
         __table_args__ = {"extend_existing": True}
 
         if db_type in ("oracle", "duckdb"):
@@ -112,12 +120,15 @@ def get_models(table_prefix, db_type, table_len_config):
             nullable=False,
         )
 
+
+
+
     class QuestionDepTable(DynamicBase):
         """
         answer table
         """
 
-        __tablename__ = table_prefix + "_question_dep"
+        __tablename__ = f"{table_prefix}_question_dep"
         __table_args__ = {"extend_existing": True}
 
         if db_type in ("oracle", "duckdb"):
@@ -136,12 +147,15 @@ def get_models(table_prefix, db_type, table_len_config):
         )
         dep_type = Column(Integer, nullable=False)
 
+
+
+
     class ReportTable(DynamicBase):
         """
         report table
         """
 
-        __tablename__ = table_prefix + "_report"
+        __tablename__ = f"{table_prefix}_report"
         __table_args__ = {"extend_existing": True}
 
         if db_type in ("oracle", "duckdb"):
@@ -174,6 +188,7 @@ def get_models(table_prefix, db_type, table_len_config):
             String(_get_table_len(table_len_config, "question_question")),
             nullable=True,
         )
+
 
     return QuestionTable, AnswerTable, QuestionDepTable, SessionTable, ReportTable
 
@@ -234,16 +249,15 @@ class SQLStorage(CacheStorage):
         session.add(ques_data)
         session.flush()
         if isinstance(data.question, Question) and data.question.deps is not None:
-            all_deps = []
-            for dep in data.question.deps:
-                all_deps.append(
-                    self._ques_dep(
-                        question_id=ques_data.id,
-                        dep_name=dep.name,
-                        dep_data=dep.data,
-                        dep_type=dep.dep_type,
-                    )
+            all_deps = [
+                self._ques_dep(
+                    question_id=ques_data.id,
+                    dep_name=dep.name,
+                    dep_data=dep.data,
+                    dep_type=dep.dep_type,
                 )
+                for dep in data.question.deps
+            ]
             session.add_all(all_deps)
         answers = data.answers if isinstance(data.answers, list) else [data.answers]
         all_data = []
@@ -269,8 +283,7 @@ class SQLStorage(CacheStorage):
     def batch_insert(self, all_data: List[CacheData]):
         ids = []
         with self.Session() as session:
-            for data in all_data:
-                ids.append(self._insert(data, session))
+            ids.extend(self._insert(data, session) for data in all_data)
             session.commit()
         return ids
 

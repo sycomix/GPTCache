@@ -74,7 +74,7 @@ async def get_cache_file(key: str = "") -> FileResponse:
         )
     if cache_file_key != key:
         raise HTTPException(status_code=403, detail="the cache file key is wrong")
-    zip_filename = cache_dir + ".zip"
+    zip_filename = f"{cache_dir}.zip"
     with zipfile.ZipFile(zip_filename, "w", compression=zipfile.ZIP_DEFLATED) as zipf:
         for root, _, files in os.walk(cache_dir):
             for file in files:
@@ -90,7 +90,7 @@ async def chat(request: Request):
     if openai_cache is None:
         raise HTTPException(
             status_code=500,
-            detail=f"the gptcache server doesn't open the openai completes proxy",
+            detail="the gptcache server doesn't open the openai completes proxy",
         )
 
     import_starlette()

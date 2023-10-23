@@ -30,10 +30,7 @@ class Cohere(BaseEmbedding):
         self.co = cohere.Client(api_key)
         self.model = model
 
-        if model in self.dim_dict():
-            self.__dimension = self.dim_dict()[model]
-        else:
-            self.__dimension = None
+        self.__dimension = self.dim_dict()[model] if model in self.dim_dict() else None
 
     def to_embeddings(self, data, **_):
         """Generate embedding given text input

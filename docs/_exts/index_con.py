@@ -16,7 +16,7 @@ class IndexCon:
       lines = [line for line in lines if '[CI]' not in line]
 
       # change local links to the ones related to the _build/html directory and extension to .html
-      lines = [line.replace('](docs/', '](') for line in lines] 
+      lines = [line.replace('](docs/', '](') for line in lines]
       lines = [line.replace('.md)', '.html)') for line in lines]
 
       # get the raw text within the <details> tag
@@ -37,7 +37,7 @@ class IndexCon:
 
       collapse_rst = convert(''.join(collapse_rst))
       collapse_rst = collapse_rst.split("\n")
-      collapse_rst = [ '    ' + x for x in collapse_rst]
+      collapse_rst = [f'    {x}' for x in collapse_rst]
 
       collapse_rst = [f'\n.. collapse:: Click to SHOW examples\n'] + collapse_rst
       os.remove(self.output)
@@ -47,7 +47,7 @@ class IndexCon:
         f.write('\n'.join(collapse_rst))
         f.write(end)
         f.write('\n\n')
-        
+
         with open('toc.bak', 'r') as t:
           f.write(t.read())
 

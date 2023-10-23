@@ -34,15 +34,12 @@ class UForm(BaseEmbedding):
     """
 
     def __init__(self, model: Union[str, TritonClient] = "unum-cloud/uform-vl-english", embedding_type: str = "text"):
-        if isinstance(model, str):
-            self.__model = get_model(model)
-        else:
-            self.__model = model
+        self.__model = get_model(model) if isinstance(model, str) else model
         self.__embedding_type = embedding_type
-        if embedding_type == "text":
-            self.__dimension = self.__model.text_encoder.proj.out_features
-        elif embedding_type == "image":
+        if embedding_type == "image":
             self.__dimension = self.__model.img_encoder.proj.out_features
+        elif embedding_type == "text":
+            self.__dimension = self.__model.text_encoder.proj.out_features
         else:
             raise ParamError(f"Unknown embedding type: {embedding_type}")
 

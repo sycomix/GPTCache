@@ -45,9 +45,7 @@ class CohereRerank(SimilarityEvaluation):
             documents=cache_dict["answer"],
             top_n=1,
         )
-        if len(response.results) == 0:
-            return 0
-        return response.results[0].relevance_score
+        return 0 if len(response.results) == 0 else response.results[0].relevance_score
 
     def range(self) -> Tuple[float, float]:
         return 0.0, 1.0

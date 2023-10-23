@@ -172,8 +172,7 @@ class Weaviate(VectorBase):
         if len(results) < 1:
             return None
 
-        vec_emb = np.asarray(results[0]["_additional"]["vector"], dtype="float32")
-        return vec_emb
+        return np.asarray(results[0]["_additional"]["vector"], dtype="float32")
 
     def update_embeddings(self, data_id: int, emb: np.ndarray):
         self.delete([data_id])

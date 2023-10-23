@@ -48,7 +48,7 @@ class S3Storage(ObjectBase):
             }
         )
         if self._endpoint:
-            link = link.replace("s3.amazonaws.com/" + self._bucket, self._endpoint)
+            link = link.replace(f"s3.amazonaws.com/{self._bucket}", self._endpoint)
         return link
 
     def delete(self, to_delete: List[str]):

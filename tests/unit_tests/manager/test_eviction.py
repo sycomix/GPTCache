@@ -19,7 +19,7 @@ class TestEviction(unittest.TestCase):
     def test_eviction_lru(self):
         with TemporaryDirectory(dir='./') as root:
             db_path = Path(root) / 'sqlite.db'
-            cache_base = CacheBase("sqlite", sql_url="sqlite:///" + str(db_path))
+            cache_base = CacheBase("sqlite", sql_url=f"sqlite:///{str(db_path)}")
             vector_base = VectorBase("faiss", dimension=DIM)
             data_manager = get_data_manager(
                 cache_base, vector_base, max_size=10, clean_size=2, eviction="LRU"
@@ -36,7 +36,7 @@ class TestEviction(unittest.TestCase):
     def test_eviction_fifo(self):
         with TemporaryDirectory(dir='./') as root:
             db_path = Path(root) / 'sqlite.db'
-            cache_base = CacheBase("sqlite", sql_url="sqlite:///" + str(db_path))
+            cache_base = CacheBase("sqlite", sql_url=f"sqlite:///{str(db_path)}")
             vector_base = VectorBase("faiss", dimension=DIM)
             data_manager = get_data_manager(
                 cache_base, vector_base, max_size=10, clean_size=2, eviction="FIFO"

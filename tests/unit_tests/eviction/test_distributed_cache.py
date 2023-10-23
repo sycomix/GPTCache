@@ -13,8 +13,8 @@ from gptcache.manager.eviction import EvictionBase
 class TestDistributedCache(unittest.TestCase):
     url: str = "redis://default:default@localhost:6379"
 
-    def setUp(cls) -> None:
-        cls._clear_test_db()
+    def setUp(self) -> None:
+        self._clear_test_db()
 
     @staticmethod
     def _clear_test_db():
@@ -54,15 +54,15 @@ class TestDistributedCache(unittest.TestCase):
         with TemporaryDirectory(dir="./") as root:
             db_name = "sqlite"
             db_path = Path(root) / f"{db_name}.db"
-            manager = manager_factory("sqlite,faiss",
-                                      eviction_manager="redis",
-                                      scalar_params={
-                                          "url": f"{db_name}:///" + str(db_path),
-                                      },
-                                      vector_params={"dimension": 5},
-                                      eviction_params=dict(url=self.url,
-                                                           maxmemory="100mb",
-                                                           policy="allkeys-lru"))
+            manager = manager_factory(
+                "sqlite,faiss",
+                eviction_manager="redis",
+                scalar_params={"url": f"{db_name}:///{str(db_path)}"},
+                vector_params={"dimension": 5},
+                eviction_params=dict(
+                    url=self.url, maxmemory="100mb", policy="allkeys-lru"
+                ),
+            )
 
             self.assertEqual(type(manager.s).__name__, "SQLStorage")
             self.assertEqual(type(manager.eviction_base).__name__, "RedisCacheEviction")

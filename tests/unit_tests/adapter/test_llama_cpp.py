@@ -17,7 +17,7 @@ class MockLlama:
     def __init__(self, *args, **kwargs):
         pass
 
-    def create_completion(*args, **kwargs):
+    def create_completion(self, **kwargs):
         data = {
             "choices": [
                 {
@@ -35,11 +35,8 @@ class MockLlama:
                 "prompt_tokens": 36,
                 "total_tokens": 337
             }
-        }        
-        if not kwargs.get('stream', False):
-            return data
-        else:
-            return iter([data])
+        }
+        return data if not kwargs.get('stream', False) else iter([data])
 
 
 mock_module = MagicMock()

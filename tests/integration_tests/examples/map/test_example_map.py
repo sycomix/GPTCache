@@ -9,9 +9,9 @@ from gptcache import cache, Cache
 def test_map():
     dir_name, _ = os.path.split(os.path.abspath(__file__))
     bak_cache = Cache()
-    bak_data_file = dir_name + "/data_map_bak.txt"
+    bak_data_file = f"{dir_name}/data_map_bak.txt"
     bak_cache.init(data_manager=get_data_manager(data_path=bak_data_file, max_size=10))
-    data_file = dir_name + "/data_map.txt"
+    data_file = f"{dir_name}/data_map.txt"
     cache.init(
         data_manager=get_data_manager(data_path=data_file, max_size=10),
         next_cache=bak_cache,

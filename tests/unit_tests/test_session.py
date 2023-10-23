@@ -13,9 +13,7 @@ from gptcache.utils.response import get_text_from_openai_answer
 
 
 def check_hit(cur_session_id, cache_session_ids, cache_questions, cache_answer):
-    if cache_questions and "what" in cache_questions[0]:
-        return True
-    return False
+    return bool(cache_questions and "what" in cache_questions[0])
 
 
 class TestSession(unittest.TestCase):

@@ -13,14 +13,8 @@ def euclidean_distance_calculate(vec_l: np.array, vec_r: np.array):
 def reweight(weights, length):
     if length >= len(weights):
         return weights
-    else:
-        reweighted_ws = []
-        sum_ws = 0
-        for i in range(length):
-            sum_ws += weights[i]
-        for i in range(length):
-            reweighted_ws.append(weights[i] * (1 / sum_ws))
-        return reweighted_ws
+    sum_ws = sum(weights[i] for i in range(length))
+    return [weights[i] * (1 / sum_ws) for i in range(length)]
 
 
 class SequenceMatchEvaluation(SimilarityEvaluation):
@@ -69,8 +63,7 @@ class SequenceMatchEvaluation(SimilarityEvaluation):
         :return: normalized vector.
         """
         magnitude = np.linalg.norm(vec)
-        normalized_v = vec / magnitude
-        return normalized_v
+        return vec / magnitude
 
     def evaluation(
         self, src_dict: Dict[str, Any], cache_dict: Dict[str, Any], **_
@@ -90,16 +83,14 @@ class SequenceMatchEvaluation(SimilarityEvaluation):
         cache_contents = cache_question.split("USER: ")
         src_contents = [content for content in src_contents if len(content) > 0]
         cache_contents = [content for content in cache_contents if len(content) > 0]
-        src_embs = []
-        cache_embs = []
-        for content in src_contents:
-            src_embs.append(
-                self.normalize(self.embedding_extractor.to_embeddings(content))
-            )
-        for content in cache_contents:
-            cache_embs.append(
-                self.normalize(self.embedding_extractor.to_embeddings(content))
-            )
+        src_embs = [
+            self.normalize(self.embedding_extractor.to_embeddings(content))
+            for content in src_contents
+        ]
+        cache_embs = [
+            self.normalize(self.embedding_extractor.to_embeddings(content))
+            for content in cache_contents
+        ]
         length = min([len(src_contents), len(cache_contents), len(self.weights)])
         assert length > 0
         ws = self.weights
@@ -107,12 +98,10 @@ class SequenceMatchEvaluation(SimilarityEvaluation):
         ws = reweight(ws, length)
         src_embs = src_embs[::-1]
         cache_embs = cache_embs[::-1]
-        weighted_distance = 0
-        for i in range(length):
-            weighted_distance += (
-                4 - euclidean_distance_calculate(src_embs[i], cache_embs[i])
-            ) * ws[i]
-        return weighted_distance
+        return sum(
+            (4 - euclidean_distance_calculate(src_embs[i], cache_embs[i])) * ws[i]
+            for i in range(length)
+        )
 
     def range(self) -> Tuple[float, float]:
         """Range of similarity score.

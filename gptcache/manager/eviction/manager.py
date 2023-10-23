@@ -29,20 +29,15 @@ class EvictionBase:
         if name in "memory":
             from gptcache.manager.eviction.memory_cache import MemoryCacheEviction
 
-            eviction_base = MemoryCacheEviction(
+            return MemoryCacheEviction(
                 policy, maxsize, clean_size, on_evict, **kwargs
             )
-            return eviction_base
         if name == "redis":
             from gptcache.manager.eviction.redis_eviction import RedisCacheEviction
             if policy == "LRU":
                 policy = None
-            eviction_base = RedisCacheEviction(policy=policy, **kwargs)
-            return eviction_base
-        if name == "no_op_eviction":
-            from gptcache.manager.eviction.distributed_cache import NoOpEviction
-            eviction_base = NoOpEviction()
-            return eviction_base
-
-        else:
+            return RedisCacheEviction(policy=policy, **kwargs)
+        if name != "no_op_eviction":
             raise NotFoundError("eviction base", name)
+        from gptcache.manager.eviction.distributed_cache import NoOpEviction
+        return NoOpEviction()

@@ -47,8 +47,7 @@ class TestLog:
 
         except Exception as e:
             print(
-                "Can not use %s or %s or %s to log. error : %s"
-                % (log_debug, log_file, log_err, str(e))
+                f"Can not use {log_debug} or {log_file} or {log_err} to log. error : {str(e)}"
             )
 
 

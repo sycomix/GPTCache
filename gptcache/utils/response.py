@@ -21,8 +21,7 @@ def get_image_from_openai_b64(openai_resp):
 def get_image_from_openai_url(openai_resp):
     url = openai_resp["data"][0]["url"]
     img_content = requests.get(url).content
-    img_data = base64.b64encode(img_content)
-    return img_data
+    return base64.b64encode(img_content)
 
 
 def get_image_from_path(openai_resp):

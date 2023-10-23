@@ -176,7 +176,7 @@ def adapt(llm_handler, cache_data_convert, update_cache_callback, *args, **kwarg
                 )
                 chat_cache.data_manager.hit_cache_callback(search_data)
         cache_answers = sorted(cache_answers, key=lambda x: x[0], reverse=True)
-        answers_dict = dict((d[1], d) for d in cache_answers)
+        answers_dict = {d[1]: d for d in cache_answers}
         if len(cache_answers) != 0:
 
             def post_process():
@@ -432,7 +432,7 @@ async def aadapt(
                 )
                 chat_cache.data_manager.hit_cache_callback(search_data)
         cache_answers = sorted(cache_answers, key=lambda x: x[0], reverse=True)
-        answers_dict = dict((d[1], d) for d in cache_answers)
+        answers_dict = {d[1]: d for d in cache_answers}
         if len(cache_answers) != 0:
             def post_process():
                 if chat_cache.post_process_messages_func is temperature_softmax:
@@ -536,8 +536,7 @@ def _summarize_input(text, text_length):
     global _input_summarizer
     if _input_summarizer is None:
         _input_summarizer = SummarizationContextProcess()
-    summarization = _input_summarizer.summarize_to_sentence([text], text_length)
-    return summarization
+    return _input_summarizer.summarize_to_sentence([text], text_length)
 
 
 def cache_health_check(vectordb, cache_dict):

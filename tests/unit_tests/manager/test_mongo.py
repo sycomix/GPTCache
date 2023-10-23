@@ -35,15 +35,12 @@ def _clear_test_db(dbname):
 
 def _inner_test_normal(dbname: str):
     mongo_storage = MongoStorage(dbname=dbname)
-    data = []
-    for i in range(1, 10):
-        data.append(
-            CacheData(
-                "question_" + str(i),
-                ["answer_" + str(i)] * i,
-                np.random.rand(5)
-            )
+    data = [
+        CacheData(
+            f"question_{str(i)}", [f"answer_{str(i)}"] * i, np.random.rand(5)
         )
+        for i in range(1, 10)
+    ]
     mongo_storage.batch_insert(data)
 
     for i in range(1, 10):
@@ -110,15 +107,12 @@ def _inner_test_with_deps(dbname: str):
 def _test_create_on(dbname):
     mongo_storage = MongoStorage(dbname=dbname)
     mongo_storage.create()
-    data = []
-    for i in range(1, 10):
-        data.append(
-            CacheData(
-                "question_" + str(i),
-                ["answer_" + str(i)] * i,
-                np.random.rand(5),
-            )
+    data = [
+        CacheData(
+            f"question_{str(i)}", [f"answer_{str(i)}"] * i, np.random.rand(5)
         )
+        for i in range(1, 10)
+    ]
     mongo_storage.batch_insert(data)
     data = mongo_storage.get_data_by_id(1)
     create_on1 = data.create_on
@@ -136,16 +130,15 @@ def _test_create_on(dbname):
 
 def _test_session(dbname):
     mongo_storage = MongoStorage(dbname=dbname)
-    data = []
-    for i in range(1, 11):
-        data.append(
-            CacheData(
-                "question_" + str(i),
-                ["answer_" + str(i)] * i,
-                np.random.rand(5),
-                session_id=str(1 if i <= 5 else 0)
-            )
+    data = [
+        CacheData(
+            f"question_{str(i)}",
+            [f"answer_{str(i)}"] * i,
+            np.random.rand(5),
+            session_id=str(1 if i <= 5 else 0),
         )
+        for i in range(1, 11)
+    ]
     mongo_storage.batch_insert(data)
     assert len(mongo_storage.list_sessions()) == 10
     assert len(mongo_storage.list_sessions(session_id="0")) == 5

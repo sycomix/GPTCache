@@ -41,15 +41,19 @@ class _VectorType(UserDefinedType):
 
 
 def _get_model_and_index(table_prefix, vector_dimension, index_type, lists):
+
+
+
     class VectorStoreTable(Base):
         """
         vector store table
         """
 
-        __tablename__ = table_prefix + "_pg_vector_store"
+        __tablename__ = f"{table_prefix}_pg_vector_store"
         __table_args__ = {"extend_existing": True}
         id = Column(Integer, primary_key=True, autoincrement=False)
         embedding = Column(_VectorType(vector_dimension), nullable=False)
+
 
     vector_store_index = Index(
         f"idx_{table_prefix}_pg_vector_store_embedding",

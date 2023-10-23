@@ -195,16 +195,15 @@ class MongoStorage(CacheStorage):
         )
         ques_data.save()
         if isinstance(data.question, Question) and data.question.deps is not None:
-            all_deps = []
-            for dep in data.question.deps:
-                all_deps.append(
-                    self._ques_dep(
-                        question_id=ques_data.oid,
-                        dep_name=dep.name,
-                        dep_data=dep.data,
-                        dep_type=dep.dep_type,
-                    )
+            all_deps = [
+                self._ques_dep(
+                    question_id=ques_data.oid,
+                    dep_name=dep.name,
+                    dep_data=dep.data,
+                    dep_type=dep.dep_type,
                 )
+                for dep in data.question.deps
+            ]
             self._ques_dep.objects.insert(all_deps)
 
         answers = data.answers if isinstance(data.answers, list) else [data.answers]
@@ -231,10 +230,7 @@ class MongoStorage(CacheStorage):
         return ques_data.oid
 
     def batch_insert(self, all_data: List[CacheData]):
-        ids = []
-        for data in all_data:
-            ids.append(self._insert(data))
-        return ids
+        return [self._insert(data) for data in all_data]
 
     def get_data_by_id(self, key) -> Optional[CacheData]:
         qs = self._ques.objects.get(_id=key, deleted=0)
@@ -273,8 +269,7 @@ class MongoStorage(CacheStorage):
 
     def get_ids(self, deleted: bool = True):
         state = -1 if deleted else 0
-        res = [obj.oid for obj in self._ques.objects(deleted=state).only("_id")]
-        return res
+        return [obj.oid for obj in self._ques.objects(deleted=state).only("_id")]
 
     def count(self, state: int = 0, is_all: bool = False):
         if is_all:

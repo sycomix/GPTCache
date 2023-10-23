@@ -57,10 +57,9 @@ class PaddleNLP(BaseEmbedding):
         input_mask_expanded = (
             attention_mask.unsqueeze(-1).expand(token_embeddings.shape).astype("float32")
         )
-        sentence_embs = paddle.sum(
-            token_embeddings * input_mask_expanded, 1
-        ) / paddle.clip(input_mask_expanded.sum(1), min=1e-9)
-        return sentence_embs
+        return paddle.sum(token_embeddings * input_mask_expanded, 1) / paddle.clip(
+            input_mask_expanded.sum(1), min=1e-9
+        )
 
     @property
     def dimension(self):

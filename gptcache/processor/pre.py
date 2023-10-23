@@ -44,8 +44,7 @@ def last_content_without_prompt(data: Dict[str, Any], **params: Dict[str, Any]) 
     if prompts is None:
         return last_content_str
     pattern = "|".join(prompts)
-    new_content_str = re.sub(pattern, "", last_content_str)
-    return new_content_str
+    return re.sub(pattern, "", last_content_str)
 
 
 def _get_pattern_value(pattern_str: str, value_str: str):

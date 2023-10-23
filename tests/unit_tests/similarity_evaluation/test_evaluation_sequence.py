@@ -25,7 +25,6 @@ def _test_evaluation(evaluation):
         {"question": "USER:foo1\nUser:foo2\nUser:foo3\n"},
         {"question": "USER:foo1\nUser:foo2\n"},
     )
-    assert True
 
 
 def test_sequence_match():

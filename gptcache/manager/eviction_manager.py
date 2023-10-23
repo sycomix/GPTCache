@@ -21,12 +21,10 @@ class EvictionManager:
     def check_evict(self):
         mark_count = self._scalar_storage.count(state=-1)
         all_count = self._scalar_storage.count(is_all=True)
-        if (
+        return (
             mark_count > self.MAX_MARK_COUNT
             or mark_count / all_count > self.MAX_MARK_RATE
-        ):
-            return True
-        return False
+        )
 
     def delete(self):
         mark_ids = self._scalar_storage.get_ids(deleted=True)

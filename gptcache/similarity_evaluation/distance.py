@@ -51,9 +51,7 @@ class SearchDistanceEvaluation(SimilarityEvaluation):
             distance = 0
         elif distance > self.max_distance:
             distance = self.max_distance
-        if self.positive:
-            return distance
-        return self.max_distance - distance
+        return distance if self.positive else self.max_distance - distance
 
     def range(self) -> Tuple[float, float]:
         """Range of similarity score.

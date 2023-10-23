@@ -50,8 +50,7 @@ class NumpyNormEvaluation(SimilarityEvaluation):
         :return: normalized vector.
         """
         magnitude = np.linalg.norm(vec)
-        normalized_v = vec / magnitude
-        return normalized_v
+        return vec / magnitude
 
     def evaluation(
         self, src_dict: Dict[str, Any], cache_dict: Dict[str, Any], **_

@@ -528,7 +528,7 @@ def _construct_image_create_resp_from_cache(image_data, response_format, size):
         buffered = img_file
 
     if response_format == "url":
-        target_url = os.path.abspath(str(int(time.time())) + ".jpeg")
+        target_url = os.path.abspath(f"{int(time.time())}.jpeg")
         with open(target_url, "wb") as f:
             f.write(buffered.getvalue())
         image_data = target_url

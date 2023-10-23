@@ -68,9 +68,7 @@ class SummarizationContextProcess(ContextProcess):
         self.content = ""
 
     def summarize_to_sentence(self, sentences, target_size=1000):
-        lengths = []
-        for sentence in sentences:
-            lengths.append(len(sentence))
+        lengths = [len(sentence) for sentence in sentences]
         total_length = np.array(lengths).sum()
         target_lengths = [int(target_size * l / total_length) for l in lengths]
         target_sentences = []
@@ -89,9 +87,7 @@ class SummarizationContextProcess(ContextProcess):
         return result
 
     def format_all_content(self, data: Dict[str, Any], **params: Dict[str, Any]):
-        contents = []
-        for query in data["messages"]:
-            contents.append(query)
+        contents = list(data["messages"])
         self.content = contents
 
     def process_all_content(self) -> (Any, Any):

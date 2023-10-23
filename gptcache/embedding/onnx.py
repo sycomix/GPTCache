@@ -67,10 +67,9 @@ class Onnx(BaseEmbedding):
             .repeat(token_embeddings.shape[-1], -1)
             .astype(float)
         )
-        sentence_embs = np.sum(token_embeddings * input_mask_expanded, 1) / np.maximum(
+        return np.sum(token_embeddings * input_mask_expanded, 1) / np.maximum(
             input_mask_expanded.sum(1), 1e-9
         )
-        return sentence_embs
 
     @property
     def dimension(self):

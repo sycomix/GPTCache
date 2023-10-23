@@ -47,8 +47,9 @@ img_b64_1 = response1['data'][0]['b64_json']
 img_bytes_1 = base64.b64decode((img_b64_1))
 img_file_1 = BytesIO(img_bytes_1)  # convert image to file-like object
 img_1 = Image.open(img_file_1) # convert image to PIL
-assert img_1.size == tuple([int(x) for x in size1.split('x')]), \
-    'Expected to generate an image of size {size1} but got {img_1.size}.'
+assert img_1.size == tuple(
+    int(x) for x in size1.split('x')
+), 'Expected to generate an image of size {size1} but got {img_1.size}.'
 
 
 #####################  Create an image with prompt2 ##################### 
@@ -72,5 +73,6 @@ img_b64_2 = response2['data'][0]['b64_json']
 img_bytes_2 = base64.b64decode((img_b64_2))
 img_file_2 = BytesIO(img_bytes_2)  # convert image to file-like object
 img_2 = Image.open(img_file_2) # convert image to PIL
-assert img_2.size == tuple([int(x) for x in size2.split('x')]), \
-    f'Expected to generate an image of size {size2} but got {img_2.size}.'
+assert img_2.size == tuple(
+    int(x) for x in size2.split('x')
+), f'Expected to generate an image of size {size2} but got {img_2.size}.'

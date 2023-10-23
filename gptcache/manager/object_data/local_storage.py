@@ -37,4 +37,3 @@ class LocalObjectStorage(ObjectBase):
                 os.remove(obj)
             except Exception:  # pylint: disable=broad-except
                 gptcache_log.warning("Can not find obj: %s", obj)
-                pass

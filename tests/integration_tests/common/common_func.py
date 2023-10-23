@@ -13,7 +13,7 @@ def remove_file(file_names=[ct.sqlite_file, ct.faiss_file]):
     for file in file_names:
         if os.path.isfile(file):
             os.remove(file)
-            log.info("%s is removed" % file)
+            log.info(f"{file} is removed")
 
 
 def log_time_func(func_name, delta_time):

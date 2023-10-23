@@ -152,8 +152,7 @@ class MapDataManager(DataManager):
             )
 
     def get_scalar_data(self, res_data, **kwargs) -> CacheData:
-        session = kwargs.get("session", None)
-        if session:
+        if session := kwargs.get("session", None):
             answer = (
                 res_data[1].answer if isinstance(res_data[1], Answer) else res_data[1]
             )
@@ -203,8 +202,7 @@ class MapDataManager(DataManager):
 
 def normalize(vec):
     magnitude = np.linalg.norm(vec)
-    normalized_v = vec / magnitude
-    return normalized_v
+    return vec / magnitude
 
 
 class SSDataManager(DataManager):
@@ -382,9 +380,7 @@ class SSDataManager(DataManager):
         res = self.s.list_sessions(session_id, key)
         if key:
             return res
-        if session_id:
-            return list(r.id for r in res)
-        return list(set(r.session_id for r in res))
+        return [r.id for r in res] if session_id else list({r.session_id for r in res})
 
     def delete_session(self, session_id):
         keys = self.list_sessions(session_id=session_id)

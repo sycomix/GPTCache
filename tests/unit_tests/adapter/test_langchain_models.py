@@ -182,5 +182,5 @@ def test_last_content_without_template():
     init_similar_cache(data_dir=data_dir, cache_obj=cache_obj)
 
     cache_res = get(str([subject_str]), cache_obj=cache_obj)
-    print(str([subject_str]))
+    print([subject_str])
     assert cache_res == expect_answer, cache_res

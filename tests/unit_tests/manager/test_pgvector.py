@@ -25,7 +25,7 @@ class TestPgvector(unittest.TestCase):
                 "params": {"lists": 100, "probes": 10},
             },
         )
-        db.delete([i for i in range(size)])
+        db.delete(list(range(size)))
         data = np.random.randn(size, dim).astype(np.float32)
         db.mul_add([VectorData(id=i, data=v) for v, i in zip(data, range(size))])
         self.assertEqual(len(db.search(data[0])), top_k)

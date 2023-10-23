@@ -51,9 +51,7 @@ class Question:
 
     @classmethod
     def from_dict(cls, d: Dict):
-        deps = []
-        for dep in d["deps"]:
-            deps.append(QuestionDep.from_dict(dep))
+        deps = [QuestionDep.from_dict(dep) for dep in d["deps"]]
         return cls(d["content"], deps)
 
 

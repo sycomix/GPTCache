@@ -7,7 +7,7 @@ from gptcache import cache
 
 def run():
     dir_name, _ = os.path.split(os.path.abspath(__file__))
-    data_file = dir_name + '/data_map.txt'
+    data_file = f'{dir_name}/data_map.txt'
     data_manager = get_data_manager(data_path=data_file, max_size=10)
     cache.init(data_manager=data_manager)
     cache.set_openai_key()

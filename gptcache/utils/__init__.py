@@ -52,9 +52,7 @@ from gptcache.utils.softmax import softmax  # pylint: disable=unused-argument
 
 
 def _check_library(libname: str, prompt: bool = True, package: Optional[str] = None):
-    is_avail = False
-    if importlib.util.find_spec(libname):
-        is_avail = True
+    is_avail = bool(importlib.util.find_spec(libname))
     if not is_avail and prompt:
         prompt_install(package if package else libname)
     return is_avail

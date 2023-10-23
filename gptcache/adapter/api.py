@@ -121,14 +121,13 @@ def get(prompt: str, **kwargs) -> Any:
             put("hello", "foo")
             print(get("hello"))
     """
-    res = adapt(
+    return adapt(
         _llm_handle_none,
         _cache_data_converter,
         _update_cache_callback_none,
         prompt=prompt,
         **kwargs,
     )
-    return res
 
 
 def init_similar_cache(
@@ -229,8 +228,7 @@ def init_similar_cache_from_config(config_dir: str, cache_obj: Optional[Cache] =
 
     cache_obj = cache_obj if cache_obj else cache
 
-    pre_process = init_conf.get("pre_context_function")
-    if pre_process:
+    if pre_process := init_conf.get("pre_context_function"):
         pre_func = _get_pre_context_function(
             pre_process, init_conf.get("pre_context_config")
         )

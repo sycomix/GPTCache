@@ -206,14 +206,14 @@ class DynamoStorage(CacheStorage):
         #
         # To address this, we're gonna spin up a thread pool and query concurrently
         with ThreadPoolExecutor(max_workers = 10) as executor:
-            futures = []
-            for i in range(1, self.max_cardinality_suffix + 1):
-                futures.append(executor.submit(
+            futures = [
+                executor.submit(
                     table.query,
-                    IndexName = "gsi_questions_by_deletion_status",
-                    KeyConditionExpression = DynamoKey("deleted").eq(f"True_{i}")
-                ))
-
+                    IndexName="gsi_questions_by_deletion_status",
+                    KeyConditionExpression=DynamoKey("deleted").eq(f"True_{i}"),
+                )
+                for i in range(1, self.max_cardinality_suffix + 1)
+            ]
             completed_responses, incomplete_responses = wait(futures, timeout = 10)
 
             if len(incomplete_responses) > 0:
@@ -268,10 +268,11 @@ class DynamoStorage(CacheStorage):
         table.wait_until_exists()
         key_condition_expression = DynamoAttr("id").begins_with("questions#")
 
-        if not is_all and state == 0:
-            key_condition_expression &= DynamoAttr("deleted").begins_with("False_")
-        elif not is_all and state != 0:
-            key_condition_expression &= DynamoAttr("deleted").begins_with("True_")
+        if not is_all:
+            if state == 0:
+                key_condition_expression &= DynamoAttr("deleted").begins_with("False_")
+            elif state != 0:
+                key_condition_expression &= DynamoAttr("deleted").begins_with("True_")
 
         # TODO: find out if specifying a "COUNT" select type results in a single page or not. For now, assume the worst
         #       and attempt pagination anyway.
@@ -291,7 +292,7 @@ class DynamoStorage(CacheStorage):
             )
 
         all_responses = self._fetch_all_pages(run_scan_operation)
-        return sum([response["Count"] for response in all_responses])
+        return sum(response["Count"] for response in all_responses)
 
     def add_session(self, question_id: str, session_id: str, session_question: str):
         table = self._dynamo.Table("gptcache_questions")
@@ -358,16 +359,16 @@ class DynamoStorage(CacheStorage):
         # unfortunately, there is no "batch get" operation on a GSI. So we need to spin up a thread pool and query
         # concurrently
         with ThreadPoolExecutor(max_workers = 10) as executor:
-            futures = []
-            for key in keys:
-                futures.append(executor.submit(
+            futures = [
+                executor.submit(
                     table.query,
-                    IndexName = "gsi_items_by_type",
-                    Select = "SPECIFIC_ATTRIBUTES",
-                    ProjectionExpression = "pk, id",
-                    KeyConditionExpression = DynamoKey("id").eq(f"sessions#{key}")
-                ))
-
+                    IndexName="gsi_items_by_type",
+                    Select="SPECIFIC_ATTRIBUTES",
+                    ProjectionExpression="pk, id",
+                    KeyConditionExpression=DynamoKey("id").eq(f"sessions#{key}"),
+                )
+                for key in keys
+            ]
             completed_responses, incomplete_responses = wait(futures, timeout = 10)
 
             if len(incomplete_responses) > 0:
@@ -487,11 +488,7 @@ class DynamoStorage(CacheStorage):
         return SystemRandom().randint(1, math.pow(2, 63) - 1)
 
     def _strip_all_props_with_none_values(self, obj: Dict) -> Dict:
-        sanitized = {}
-        for k, v in obj.items():
-            if v is not None:
-                sanitized[k] = v
-        return sanitized
+        return {k: v for k, v in obj.items() if v is not None}
 
     def _serialize_deleted_value(self, value: bool, suffix_value = randint(1, max_cardinality_suffix)) -> str:
         """

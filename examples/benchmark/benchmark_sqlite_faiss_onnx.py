@@ -16,26 +16,6 @@ def run():
 
     embedding_onnx = EmbeddingOnnx()
 
-    # if you want more accurate results,
-    # you can use onnx's results to evaluate the model,
-    # it will make the results more accurate, but the cache hit rate will decrease
-
-    # evaluation_onnx = EvaluationOnnx()
-    # class WrapEvaluation(SearchDistanceEvaluation):
-    #
-    #     def __init__(self):
-    #         self.evaluation_onnx = EvaluationOnnx()
-    #
-    #     def evaluation(self, src_dict, cache_dict, **kwargs):
-    #         rank1 = super().evaluation(src_dict, cache_dict, **kwargs)
-    #         if rank1 <= 0.5:
-    #             rank2 = evaluation_onnx.evaluation(src_dict, cache_dict, **kwargs)
-    #             return rank2 if rank2 != 0 else 1
-    #         return 0
-    #
-    #     def range(self):
-    #         return 0.0, 1.0
-
     class WrapEvaluation(SearchDistanceEvaluation):
         def evaluation(self, src_dict, cache_dict, **kwargs):
             return super().evaluation(src_dict, cache_dict, **kwargs)
@@ -57,11 +37,8 @@ def run():
         config=Config(similarity_threshold=0.95),
     )
 
-    i = 0
-    for pair in mock_data:
+    for i, pair in enumerate(mock_data):
         pair["id"] = str(i)
-        i += 1
-
     if not has_data:
         print("insert data")
         start_time = time.time()

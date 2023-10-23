@@ -69,8 +69,7 @@ class KReciprocalEvaluation(SearchDistanceEvaluation):
         :return: normalized vector.
         """
         magnitude = np.linalg.norm(vec)
-        normalized_v = vec / magnitude
-        return normalized_v
+        return vec / magnitude
 
 
     def evaluation(
@@ -95,8 +94,7 @@ class KReciprocalEvaluation(SearchDistanceEvaluation):
         if euc_dist > candidates[-1][0]:
             euc_dist = self.range()[1]
 
-        result_dict = {}
-        result_dict['search_result'] = (euc_dist, None)
+        result_dict = {'search_result': (euc_dist, None)}
         return super().evaluation(None, result_dict)
 
 

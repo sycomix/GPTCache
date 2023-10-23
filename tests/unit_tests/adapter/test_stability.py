@@ -38,9 +38,11 @@ def test_stability_inference_map():
         answer_response = stability_api.generate(prompt="Test prompt", width=1, height=1)
         answers = []
         for resp in answer_response:
-            for artifact in resp.artifacts:      
-                if artifact.type == generation.ARTIFACT_IMAGE:
-                    answers.append(Image.open(BytesIO(artifact.binary)))
+            answers.extend(
+                Image.open(BytesIO(artifact.binary))
+                for artifact in resp.artifacts
+                if artifact.type == generation.ARTIFACT_IMAGE
+            )
         assert len(answers) == 1, f"Expect to get 1 image but got {len(answers)}"
         diff = ImageChops.difference(answers[0], expected_img)
         assert not diff.getbbox()

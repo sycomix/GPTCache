@@ -87,8 +87,7 @@ class Timm(BaseEmbedding):
         transform = create_transform(**data_cfg)
 
         image = Image.open(image_path).convert("RGB")
-        image_tensor = transform(image)
-        return image_tensor
+        return transform(image)
 
 
 

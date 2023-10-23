@@ -34,8 +34,7 @@ def parse_args():
              "in xxx=yyy format will be merged into config file (deprecate), "
              "change to --cfg-options instead.",
     )
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 args = parse_args()

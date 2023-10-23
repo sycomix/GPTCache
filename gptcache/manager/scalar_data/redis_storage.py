@@ -32,11 +32,13 @@ def get_models(global_key: str, redis_connection: Redis):
     :type redis_connection: Redis
     """
 
+
+
     class Counter:
         """
         counter collection
         """
-        key_name = global_key + ":counter"
+        key_name = f"{global_key}:counter"
         database = redis_connection
 
         @classmethod
@@ -46,6 +48,7 @@ def get_models(global_key: str, redis_connection: Redis):
         @classmethod
         def get(cls):
             return cls.database.get(cls.key_name)
+
 
     class EmbeddingType:
         """
@@ -249,14 +252,14 @@ class RedisCacheStorage(CacheStorage):
 
         all_deps = []
         if isinstance(data.question, Question) and data.question.deps is not None:
-            for dep in data.question.deps:
-                all_deps.append(
-                    self._ques_dep(
-                        dep_name=dep.name,
-                        dep_data=dep.data,
-                        dep_type=dep.dep_type,
-                    )
+            all_deps.extend(
+                self._ques_dep(
+                    dep_name=dep.name,
+                    dep_data=dep.data,
+                    dep_type=dep.dep_type,
                 )
+                for dep in data.question.deps
+            )
         embedding_data = (
             data.embedding_data
             if data.embedding_data is not None
@@ -293,13 +296,12 @@ class RedisCacheStorage(CacheStorage):
     def batch_insert(self, all_data: List[CacheData]):
         ids = []
         with self.con.pipeline() as pipeline:
-            for data in all_data:
-                ids.append(self._insert(data, pipeline=pipeline))
+            ids.extend(self._insert(data, pipeline=pipeline) for data in all_data)
             pipeline.execute()
         return ids
 
     def get_data_by_id(self, key: str):
-        key = str(key)
+        key = key
         try:
             qs = self._ques.get(pk=key)
         except NotFoundError:
@@ -346,10 +348,10 @@ class RedisCacheStorage(CacheStorage):
 
     def get_ids(self, deleted=True):
         state = -1 if deleted else 0
-        res = [
-            int(obj.pk) for obj in self._ques.find(self._ques.deleted == state).all()
+        return [
+            int(obj.pk)
+            for obj in self._ques.find(self._ques.deleted == state).all()
         ]
-        return res
 
     def count(self, state: int = 0, is_all: bool = False):
         if is_all:

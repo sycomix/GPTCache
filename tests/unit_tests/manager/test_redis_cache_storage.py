@@ -17,8 +17,8 @@ class TestRedisStorage(unittest.TestCase):
 
     # url = "redis://default:default@localhost:7000"
 
-    def setUp(cls) -> None:
-        cls._clear_test_db()
+    def setUp(self) -> None:
+        self._clear_test_db()
 
     @staticmethod
     def _clear_test_db():
@@ -30,15 +30,14 @@ class TestRedisStorage(unittest.TestCase):
     def test_normal(self):
         redis_storage = RedisCacheStorage(global_key_prefix=self.test_dbname,
                                           url=self.url)
-        data = []
-        for i in range(1, 10):
-            data.append(
-                CacheData(
-                    "question_" + str(i),
-                    ["answer_" + str(i)] * i,
-                    np.random.rand(5).astype(np.float32)
-                )
+        data = [
+            CacheData(
+                f"question_{str(i)}",
+                [f"answer_{str(i)}"] * i,
+                np.random.rand(5).astype(np.float32),
             )
+            for i in range(1, 10)
+        ]
         ids = redis_storage.batch_insert(data)
 
         for i, idx in enumerate(ids, start=1):
@@ -108,15 +107,12 @@ class TestRedisStorage(unittest.TestCase):
         redis_storage = RedisCacheStorage(global_key_prefix=self.test_dbname,
                                           url=self.url)
         redis_storage.create()
-        data = []
-        for i in range(1, 10):
-            data.append(
-                CacheData(
-                    "question_" + str(i),
-                    ["answer_" + str(i)] * i,
-                    np.random.rand(5),
-                )
+        data = [
+            CacheData(
+                f"question_{str(i)}", [f"answer_{str(i)}"] * i, np.random.rand(5)
             )
+            for i in range(1, 10)
+        ]
         ids = redis_storage.batch_insert(data)
         data = redis_storage.get_data_by_id(ids[0])
         create_on1 = data.create_on
@@ -134,16 +130,15 @@ class TestRedisStorage(unittest.TestCase):
     def test_session(self):
         redis_storage = RedisCacheStorage(global_key_prefix=self.test_dbname,
                                           url=self.url)
-        data = []
-        for i in range(1, 11):
-            data.append(
-                CacheData(
-                    "question_" + str(i),
-                    ["answer_" + str(i)] * i,
-                    np.random.rand(5),
-                    session_id=str(1 if i <= 5 else 0)
-                )
+        data = [
+            CacheData(
+                f"question_{str(i)}",
+                [f"answer_{str(i)}"] * i,
+                np.random.rand(5),
+                session_id=str(1 if i <= 5 else 0),
             )
+            for i in range(1, 11)
+        ]
         ids = redis_storage.batch_insert(data)
         assert len(redis_storage.list_sessions()) == 10
         assert len(redis_storage.list_sessions(session_id="0")) == 5

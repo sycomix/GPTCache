@@ -19,7 +19,7 @@ def test_redis_vector_store():
     print(search_res)
     assert len(search_res) == 10
 
-    vector_base.delete([i for i in range(5)])
+    vector_base.delete(list(range(5)))
 
     search_res = vector_base.search(np.random.rand(dim), top_k=10)
     print(search_res)

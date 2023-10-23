@@ -25,9 +25,8 @@ def run_session():
 def run_custom_session():
     def my_check_hit(cur_session_id, cache_session_ids, cache_questions, cache_answer):
         print(cur_session_id, cache_session_ids, cache_questions, cache_answer)
-        if "GitHub" in cache_answer:
-            return True
-        return False
+        return "GitHub" in cache_answer
+
     session = Session(name="my-session", check_hit_func=my_check_hit)
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
